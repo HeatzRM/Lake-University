@@ -1,0 +1,77 @@
+{% extends "./base_templates/student_base_layout.html" %}
+
+{% block student_content %}
+<style> 
+
+#student-transaction-list-content {
+ padding-left: 60px;
+ padding-right: 60px;
+}
+
+</style>
+
+<div id="student-transaction-list-content">
+    <div class="ui bottom attached ">
+        <div class="ui grid ">
+            <div class=" column">
+                <div class="ui link cards">
+                            
+                    {% if student_transactions %}
+                        {% for student_transaction in student_transactions %}
+                        <div class="card">
+                            <div class="image">
+                                <img src="{{ url_for('static', filename='images/{}'.format(student_transaction.cover_destination)) }}">
+                            </div>
+
+                            <div class="content">   
+                                <div class="header">{{student_transaction.service_name}}</div>
+                                <div class="meta">
+                                    <a>Seller: {{student_transaction.user.firstname}} {{student_transaction.user.lastname}}</a>
+                                </div>
+                                <div class="meta">
+                                    <a>{{student_transaction.contact_details}}</a>
+                                </div>
+                                <div class="description">
+                                    {{student_transaction.description}}
+                                </div>
+                                <div class="meta">
+                                    <a>
+                                        <button class=" ui button negative " id='{{student_transaction.id}}' onclick='deletePost({{student_transaction.id}})'>
+                                            <i class="trash icon"></i>
+                                            Delete
+                                        </button>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="extra content">
+                                <span class="right floated">
+                                    <i class="money icon"></i>
+                                    {{(student_transaction.price|round(2)|string).rstrip('.0')}} 
+                                </span>
+                                <span>
+                                    {% if student_transaction.service_type=='1' %}
+                                        <i class="book icon"></i>
+                                        Book rental
+                                    {% else %}
+                                        <i class="chalkboard teacher icon"></i>
+                                        Tutorial services
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+ <script>
+ function deletePost(id) {
+      window.location.replace('/student_transaction/delete/{{user.id}}/'+id);
+    }
+ </script>
+{% endblock %}

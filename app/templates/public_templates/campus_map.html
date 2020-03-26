@@ -1,0 +1,278 @@
+{% extends "./base_templates/student_base_layout.html" %}
+
+{% block student_content %}
+<style>
+    body > .grid {
+      height: 100%;
+    }
+    .image {
+      margin-top: -100px;
+    }
+    .column {
+      max-width: 1500px;
+    }
+
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+</style>
+
+
+<!-- 
+  1     Stem Centre
+2     Technical Studies
+3     Administration
+4     Canteen
+5     Laboratories
+6     Gate
+ -->
+
+<div class="ui middle aligned center aligned grid segment"
+style="
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-radius: none;
+    border: none;
+    font-family:'Roboto', sans-serif;
+"
+>
+  <div class="column">
+    <canvas id="mapCanvas" width="1500" height="820" style="border:1px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
+  </div>
+</div>
+
+
+<div class="ui grid" style="padding-left: 15%;">
+  <div class="six wide column">
+      <div class="ui fluid search selection dropdown" id="from_items_dropdown">
+        <input type="hidden" name="from_items_dropdown">
+        <i class="dropdown icon"></i>
+        <div class="default text">Select from location</div>
+        <div class="menu" id="from_location_items">
+        </div>
+      </div>
+  </div>
+
+  <div class="six wide column">
+      <div class="ui fluid search selection dropdown" id="to_items_dropdown">
+        <input type="hidden" name="to_items_dropdown">
+        <i class="dropdown icon"></i>
+        <div class="default text">Select destination</div>
+        <div class="menu" id="to_location_items">
+        </div>
+      </div>
+  </div>
+
+  <div class="four wide column">
+    <a class="ui button blue" id="get_path">Get path</a> 
+  </div>
+</div>
+
+    
+  </div>
+</div>
+
+
+
+
+<script>
+    $('.ui.dropdown')
+    .dropdown()
+    ;
+
+    $( "#get_path" ).click(function() {
+      var from_location = $('#from_items_dropdown').dropdown('get value');
+      var to_location = $('#to_items_dropdown').dropdown('get value');
+      //console.log('from_location: ' + from_location);
+      //console.log('to_location: ' + to_location);
+      $.ajax({ 
+        type : "POST", 
+        url : `get_shortest_path?start=${from_location}&goal=${to_location}`, 
+        success : function(result) { 
+           
+           rerouteMap(eval(result))
+        }, 
+        error : function(result) { 
+          //console.log(result);
+        } 
+      }); 
+
+
+    });
+
+    function rerouteMap(result){
+      arrowsToDraw = [];
+      path = eval(result.path)
+      // console.log(path);
+      
+      for (i = 0; i < path.length - 1; i++) {
+        //console.log(path[i]);
+        
+        pathname = path[i];
+        arrowsToDraw.push({
+           pathname: { 
+              'from': nodes_location[path[i]],
+              'to' : nodes_location[path[i+1]],
+            }
+        }); 
+      } 
+
+      //console.log(arrowsToDraw);
+  
+      loadMap(arrowsToDraw);
+    }
+    
+
+    nodes_location = {
+      '1' : {
+        'name': 'STEM CENTRES', //ok
+        x: '550',
+        y: '310',
+      },
+      '2' : {
+        'name': 'TECHNICAL STUDIES', //ok
+        x: '500',
+        y: '500',
+      },
+      '3' : {
+        'name': 'ADMINISTRATION', //ok
+        x: '200',
+        y: '480',
+      },
+      '4' : {
+        'name': 'CANTEEN',  //ok
+        x: '120',
+        y: '255',
+      },
+      '5' : {
+        'name': 'LABORATORIES', //ok
+        x: '350',
+        y: '90',
+      },
+      '6' : {
+        'name': 'GATE', //ok
+        x: '120',
+        y: '390',
+      }
+    }
+
+    function loadMap(arrowsToDraw=[]) {
+        var canvas = document.getElementById('mapCanvas');
+        var ctx = canvas.getContext('2d');
+
+        var img = new Image();
+
+        img.onload = function(){
+            canvas.width = img.naturalWidth
+            canvas.height = img.naturalHeight
+            ctx.drawImage(img, 5, 5);
+
+            
+            if(arrowsToDraw.length != 0){
+              console.log(arrowsToDraw);
+              for (i = 0; i < arrowsToDraw.length; i++) {
+                  drawArrowLine(
+                    arrowsToDraw[i]['pathname'].from['x'], arrowsToDraw[i]['pathname'].from['y'], arrowsToDraw[i]['pathname'].to['x'], arrowsToDraw[i]['pathname'].to['y']
+                  );
+              }
+            }
+
+            
+        }
+
+        
+
+        img.src = '{{url_for('static', filename='sample-map.PNG') }}';
+    }
+
+              
+
+    function drawArrowLine(Arrow1xAxis, Arrow1yAxis, Arrow2xAxis, Arrow2yAxis){
+        var canvas = document.getElementById('mapCanvas');
+        var ctx = canvas.getContext('2d');
+        // create a new line object   
+          var line=new Line(Arrow1xAxis, Arrow1yAxis, Arrow2xAxis, Arrow2yAxis);
+        // draw the line
+        
+        line.drawWithArrowheads(ctx);
+    }
+
+    
+    function drawCircleOnNode(xAxis=550, yAxis=50) {
+        var canvas = document.getElementById('mapCanvas');
+        var ctx = canvas.getContext("2d");
+        ctx.beginPath();
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = "red";
+        ctx.arc(xAxis, yAxis, 20, 0, 2 * Math.PI);
+        ctx.stroke();
+    }
+
+    function Line(x1,y1,x2,y2){
+        this.x1=x1;
+        this.y1=y1;
+        this.x2=x2;
+        this.y2=y2;
+    }
+
+    Line.prototype.drawWithArrowheads=function(ctx){
+
+        // arbitrary styling
+        ctx.strokeStyle="red";
+        ctx.fillStyle="red";
+        ctx.lineWidth=3;
+        
+        // draw the line
+        ctx.beginPath();
+        ctx.moveTo(this.x1,this.y1);
+        ctx.lineTo(this.x2,this.y2);
+        ctx.stroke();
+
+        // draw the ending arrowhead
+        var endRadians=Math.atan((this.y2-this.y1)/(this.x2-this.x1));
+        endRadians+=((this.x2>this.x1)?90:-90)*Math.PI/180;
+        this.drawArrowhead(ctx,this.x2,this.y2,endRadians);
+
+    }
+    
+    Line.prototype.drawArrowhead=function(ctx,x,y,radians){
+        ctx.save();
+        ctx.beginPath();
+        ctx.translate(x,y);
+        ctx.rotate(radians);
+        ctx.moveTo(0,0);
+        ctx.lineTo(5,20);
+        ctx.lineTo(-5,20);
+        ctx.closePath();
+        ctx.restore();
+        ctx.fill();
+    }
+
+
+
+
+    loadMap()
+    
+
+
+    $( document ).ready(function() {
+      //load all data
+        for (var key in nodes_location) {
+          if (nodes_location.hasOwnProperty(key)) {
+            //console.log(nodes_location[key]);
+            $('#from_location_items').append(`
+              <div class="item" data-value="${key}"></i>${nodes_location[key].name}</div>
+            `);
+
+            $('#to_location_items').append(`
+              <div class="item" data-value="${key}"></i>${nodes_location[key].name}</div>
+            `);
+          }
+        }
+        
+    });
+
+</script>
+
+{% endblock %}``

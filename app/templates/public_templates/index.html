@@ -1,0 +1,209 @@
+{% extends "./base_templates/base.html" %}
+
+{% block content %}
+
+    <style type="text/css">
+      body {
+        -webkit-font-smoothing: antialiased;
+        -moz-font-smoothing: grayscale;
+        font-family: 'Roboto Slab', serif;
+      }
+      .hidden.menu {
+        display: none;
+      }
+      .masthead.segment {
+        min-height: 600px;
+        padding: 1em 0em;
+      }
+      .masthead .logo.item img {
+        margin-right: 1em;
+      }
+      .masthead .ui.menu .ui.button {
+        margin-left: 0.5em;
+      }
+      .masthead h1.ui.header {
+        margin-top: 2em;
+        margin-bottom: 0em;
+        font-size: 4em;
+        font-weight: normal;
+      }
+      .masthead h2 {
+        font-size: 1.7em;
+        font-weight: normal;
+      }
+      .ui.vertical.stripe {
+        padding: 8em 0em;
+      }
+      .ui.vertical.stripe h3 {
+        font-size: 2em;
+      }
+      .ui.vertical.stripe .button + h3,
+      .ui.vertical.stripe p + h3 {
+        margin-top: 3em;
+      }
+      .ui.vertical.stripe .floated.image {
+        clear: both;
+      }
+      .ui.vertical.stripe p {
+        font-size: 1.33em;
+      }
+      .ui.vertical.stripe .horizontal.divider {
+        margin: 3em 0em;
+      }
+      .quote.stripe.segment {
+        padding: 0em;
+      }
+      .quote.stripe.segment .grid .column {
+        padding-top: 5em;
+        padding-bottom: 5em;
+      }
+      .footer.segment {
+        padding: 5em 0em;
+      }
+      .secondary.pointing.menu .toc.item {
+        display: none;
+      }
+      @media only screen and (max-width: 700px) {
+        .ui.fixed.menu {
+          display: none !important;
+        }
+        .secondary.pointing.menu .item,
+        .secondary.pointing.menu .menu {
+          display: none;
+        }
+        .secondary.pointing.menu .toc.item {
+          display: block;
+        }
+        .masthead.segment {
+          min-height: 350px;
+        }
+        .masthead h1.ui.header {
+          font-size: 2em;
+          margin-top: 1.5em;
+        }
+        .masthead h2 {
+          margin-top: 0.5em;
+          font-size: 1.5em;
+        }
+      }
+
+   
+    </style>
+  </head>
+
+  <body id="root">
+    <div class="ui large top fixed hidden menu" style="font-family:'Roboto', sans-serif;">
+      <div class="ui container">
+        <a class="active item" href="/">Home</a>
+        <a class="item" href="#vision_mission">Vision / Mission</a>
+        
+        <a class="item" href="/student_transaction/1">Online Student Services</a>
+        <a class="item" href="/campus_map">Campus map</a>
+        <div class="right menu">
+          {% if current_user.access_level == 1 %}
+            <a href="{{ url_for('admin_dashboard') }}" class="item ui button">Admin dashboard</a>
+          {% endif %}
+
+          {% if current_user.is_anonymous %}
+              <a href="{{ url_for('login') }}" class="item ui button">Log in</a>
+              <a href="{{ url_for('register') }}" class="item ui button">Sign Up</a>
+          {% else %}
+              <a href="{{ url_for('user', user_id=current_user.id) }}" class="item ui button">Profile</a>
+              <a href=" {{ url_for('logout') }}" class="item ui button">Logout</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <!--Sidebar Menu-->
+    <div class="ui vertical inverted sidebar menu" style="font-family:'Roboto', sans-serif;" >
+      <a class="active item" href="/">Home</a>
+      <a class="item" href="#vision_mission">Vision / Mission</a>
+        
+        <a class="item" href="/student_transaction/1">Online Student Services</a>
+      <a class="item" href="/campus_map">Campus map</a>
+
+      {% if current_user.access_level == 1 %}
+       <a href="{{ url_for('admin_dashboard') }}" class="item">Admin dashboard</a>
+      {% endif %}
+
+      {% if current_user.is_anonymous %}
+        <a href="{{ url_for('login') }}" class="item">Log in</a>
+        <a href="{{ url_for('register') }}" class="item">Sign Up</a>
+      {% else %}
+        <a href="{{ url_for('user', user_id=current_user.id) }}" class="item">Profile</a>
+        <a href=" {{ url_for('logout') }}" class="item">Logout</a>
+      {% endif %}
+    </div>
+    <!--Page Contents-->
+    <div class="pusher">
+      <div class="ui inverted vertical masthead center aligned segment" style="background: url({{url_for('static', filename='body-of-water-near-city-buildings-3884460-2.jpg')}}) no-repeat center; background-size:cover;  height: 100vh;">
+        <div class="ui container">
+          <div class="ui large secondary inverted pointing menu" style="font-family:'Roboto', sans-serif;">
+            <a class="toc item"><i class="sidebar icon"></i></a>
+            <a class="active item" href="/">Home</a>
+            <a class="item" href="#vision_mission">Vision / Mission</a>
+            
+            <a class="item" href="/student_transaction/1">Online Student Services</a>
+            <a class="item" href="/campus_map">Campus map</a>
+            <div class="item right ">
+
+              {% if current_user.access_level == 1 %}
+              <a href="{{ url_for('admin_dashboard') }}" class="ui inverted button">Admin dashboard</a>
+              {% endif %}
+
+              {% if current_user.is_anonymous %}
+                <a href="{{ url_for('login') }}" class="ui inverted button">Log in</a>
+                <a href="{{ url_for('register') }}" class="ui inverted button">Sign Up</a>
+              {% else %}
+                <a href="{{ url_for('user', user_id=current_user.id) }}" class="ui inverted button">Profile</a>
+                <a href=" {{ url_for('logout') }}" class="ui inverted button">Logout</a>
+              {% endif %}
+
+            </div>
+          </div>
+        </div>
+        <div class="ui text container">
+          <h1 class="ui inverted header">
+              <img src="{{ url_for('static', filename='logo.png') }}" class="ui fluid image">
+          </h1>
+          <h2 style="font-family: 'Roboto Slab', serif; font-size: 4em; text-shadow: 3px 5px 2px #474747;">Lake University</h2>
+        </div>
+      </div>
+
+    <section id="bsece">
+      {{bsece|safe}}
+    </section>
+    
+    <section id="vision_mission">
+      {{vision_mission|safe}}
+    </section>
+  
+
+      <div class="ui inverted vertical footer segment" style="font-family:'Roboto', sans-serif;">
+        <div class="ui container">
+          <divclass="ui stackable inverted divided equal height stackable grid">
+            <div><p>Copyright © 2020 Lake University. All Rights Reserved.</p></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        // fix menu when passed
+        $(".masthead").visibility({
+          once: false,
+          onBottomPassed: function() {
+            $(".fixed.menu").transition("fade in");
+          },
+          onBottomPassedReverse: function() {
+            $(".fixed.menu").transition("fade out");
+          }
+        });
+        // create sidebar and attach to menu open
+        $(".ui.sidebar").sidebar("attach events", ".toc.item");
+      });
+    </script>
+{% endblock %}

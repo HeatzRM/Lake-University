@@ -1,0 +1,177 @@
+{% extends "./base_templates/admin_base_layout.html" %}
+
+{% block admin_content %}
+
+
+
+<style>
+    body > .grid {
+      height: 100%;
+    }
+    .image {
+      margin-top: -100px;
+    }
+    .column {
+      max-width: 450px;
+    }
+</style>
+
+<div class="ui middle aligned center aligned grid segment">
+  <div class="column">
+    <h2 class="ui image header">
+      <div class="content">
+        Edit account
+      </div>
+    </h2>
+
+    <form action="/admin/edit_user_data/{{user.id}}" method="post" class="ui large form">
+    {{ form.hidden_tag() }}
+      <div class="ui stacked secondary  segment">
+
+        <div class="ui two column grid">
+          <div class="field column">
+            <div class="ui left icon input">
+              <i class="user icon"></i>
+              <input type="text" name="firstname" placeholder="First name" value="{{user.firstname}}">
+            </div>
+          </div>
+          <div class="field column">
+            <div class="ui left icon input">
+              <i class="user icon"></i>
+              <input type="text" name="lastname" placeholder="Last name" value="{{user.lastname}}">
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="ui selection dropdown"> 
+            <input type="hidden" name="sex"  value="{{user.sex}}">
+            <i class="dropdown icon"></i>
+            <div class="default text">Sex</div>
+            <div class="menu">
+              <div class="item" data-value="0">Not known</div>
+              <div class="item" data-value="1">Male</div>
+              <div class="item" data-value="2">Female</div>
+              <div class="item" data-value="9">Not applicable</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="user icon"></i>
+            <input type="text" name="username" placeholder="Username" value="{{user.username}}">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="envelope outline icon"></i>
+            <input type="text" name="email" placeholder="Email address" value="{{user.email}}">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="home icon"></i>
+            <input type="text" name="address" placeholder="Address" value="{{user.address}}">
+          </div>
+        </div>
+
+         <div class="field">
+          <div class="ui left icon input">
+            <i class="phone icon"></i>
+            <input type="text" name="contact" placeholder="Contact" value="{{user.contact}}">
+          </div>
+        </div>
+        
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="lock icon"></i>
+            <input type="password" name="password" placeholder="New Password">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="lock icon"></i>
+            <input type="password" name="confirmpassword" placeholder="Confirm Password">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="ui selection dropdown">
+            
+            <input type="hidden" name="access_level" value="{{user.access_level}}">
+            <i class="dropdown icon"></i>
+            <div class="default text">
+                <i class="id badge outline icon"></i>
+                Access level
+            </div>
+            <div class="menu">
+              <div class="item" data-value="1">Admin</div>
+              <div class="item" data-value="0">Not Admin</div>
+            </div>
+          </div>
+        </div>
+
+        {{form.submit(class="ui fluid large teal submit button")}}
+        
+      </div>
+
+      <div class="ui error message"></div>
+
+      {% for error in form.username.errors %}
+        <script>
+              toastr.error('{{ error }}')
+          </script>
+      {% endfor %}
+
+      {% for error in form.confirmpassword.errors %}
+          <script>
+              toastr.error('{{ error }}')
+          </script>
+      {% endfor %}
+
+      {% for error in form.email.errors %}
+          <script>
+              toastr.error('{{ error }}')
+          </script>
+      {% endfor %}
+
+
+    </form>
+
+
+
+    <div class="ui message">
+      Already have an account? <a href="/login">Login</a>
+    </div>
+  </div>
+</div>
+
+<script>
+
+ $(document).ready(function() {   
+    $('.ui.form')
+  .form({
+    fields: {
+      confirmpassword: {
+        identifier: 'confirmpassword',
+        rules: [
+          {
+            type   : 'match[password]',
+            prompt : 'Passwords do not match'
+          }
+        ]
+      }
+    }
+  })
+;
+ });
+
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "./admin_templates/admin_dashboard.html" %}
+
+{% block  admin_content %}
+
+<style> 
+
+#student-table {
+ padding-left: 60px;
+ padding-right: 60px;
+}
+
+</style>
+
+<script>
+    $( document ).ready(function() {
+        $("#search").click(function(){
+            $(location).attr('href', '/student_management/search?query=' + $('#search_input').val());
+        });
+    });
+</script>
+
+
+<div id="student-table">
+
+    <div class="ui icon input" data-children-count="1">
+        <i class="search icon"></i>
+        <input type="text" placeholder="Search..." id="search_input">
+    </div>
+
+    <button class="ui button blue" id="search">
+        Search
+    </button>
+
+
+    <table class="ui celled table" >
+    <thead>
+        <th>username</th>
+        <th>email</th>
+        <th>firstname</th>
+        <th>lastname</th>
+        <th>contact</th>
+        <th>address</th>
+        <th>sex</th>
+        <th>edit</th>
+    </tr></thead>
+    <tbody>
+        {% for student in students %}
+            <tr>
+                <td data-label="username">{{student.username}}</td>
+                <td data-label="email">{{student.email}}</td>
+                <td data-label="firstname">{{student.firstname}}</td>
+                <td data-label="lastname">{{student.lastname}}</td>
+                <td data-label="contact">{{student.contact}}</td>
+                <td data-label="address">{{student.address}}</td>
+                <td data-label="sex">
+                
+                {% if student.sex == 0 %}
+                    Not known
+                {% endif %}
+
+                {% if student.sex == 1 %}
+                    Male
+                {% endif %}
+
+                {% if student.sex == 2 %}
+                    Female
+                {% endif %}
+
+                {% if student.sex == 9 %}
+                    Not applicable
+                {% endif %}
+                
+                </td>
+                <td data-label="edit">
+                    <a class="ui labeled icon button blue" href="/admin/edit_user_data/{{student.id}}">
+                        <i class="edit icon"></i>
+                        Edit Student Data
+                    </a>
+                    <br>
+                    <a class="ui labeled icon button teal" href="/admin/edit_user_grades/{{student.id}}">
+                        <i class="file alternate icon"></i>
+                        Edit Grades
+                    </a>
+                        
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+  
+</div>
+
+{% endblock %}

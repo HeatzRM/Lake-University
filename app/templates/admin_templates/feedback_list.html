@@ -1,0 +1,55 @@
+{% extends "./base_templates/admin_base_layout.html" %}
+
+{% block admin_content %}
+
+<style>
+    body > .grid {
+      height: 100%;
+    }
+    .image {
+      margin-top: -100px;
+    }
+    .column {
+      max-width:800px;
+    }
+</style>
+
+
+<div class="ui middle aligned center aligned grid segment"
+style="
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-radius: none;
+    border: none;
+    font-family:'Roboto', sans-serif;
+"
+>
+    <div class="ui cards">
+
+    {% for feedback in feedbacks %}
+    <div class="card">
+        <div class="content">
+            <div class="header">{{feedback.name}}</div>
+            <br />
+            <div class="meta">
+                <a class="ui button red" href="/feedback/delete/{{feedback.id}}">Delete</a>
+            </div>
+            <br />
+            <div class="meta">{{feedback.email}}</div>
+            <br />
+            <div class="content">
+              <div class="summary">
+                {{feedback.details|safe}}
+              </div>
+            </div>
+
+        </div>
+    </div>
+    {% endfor %}
+
+    </div>
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "./base_templates/admin_base_layout.html" %}
+
+{% block admin_content %}
+
+
+
+<style>
+    body > .grid {
+      height: 100%;
+    }
+    .image {
+      margin-top: -100px;
+    }
+    .column {
+      max-width: 450px;
+    }
+</style>
+  
+  <div style="padding-left: 10%; padding-right: 10%">
+    <h2 class="ui image header">
+      <div class="aligned center content">
+        Edit Landing page data
+      </div>
+    </h2>
+
+    <form action="/landing_page_management" method="post" class="ui large form">
+    {{ form.hidden_tag() }}
+      <div class="ui stacked secondary  segment">
+
+      <div class="ui aligned center content">
+        <h3>Edit About ECE data</h2>
+        <br />
+      </div>
+      <textarea name="about_ece" id="about_ece" rows="10" cols="80">{{about_ece}}</textarea>
+
+      <br />
+      <hr />
+      <br />
+
+      <div class="ui aligned center content">
+        <h3>Edit Vission / Mission data</h2>
+        <br />
+      </div>
+
+      <textarea name="vision_mission" id="vision_mission" rows="10" cols="80">{{vision_mission}}</textarea>
+
+      {{form.submit(class="ui fluid large teal submit button")}}
+      
+      </div>
+
+      <div class="ui error message"></div>
+
+    </form>
+  </div>
+
+
+<script src="//cdn.ckeditor.com/4.12.1/full/ckeditor.js"></script>
+<script>
+ CKEDITOR.replace( 'about_ece' );
+ CKEDITOR.replace( 'vision_mission' );
+
+</script>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends "./base_templates/student_base_layout.html" %}
+
+{% block student_content %}
+<style>
+    body > .grid {
+      height: 100%;
+    }
+    .image {
+      margin-top: -100px;
+    }
+    .column {
+      max-width: 450px;
+    }
+</style>
+
+
+<div class="ui middle aligned center aligned grid segment"
+style="
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-radius: none;
+    border: none;
+    font-family:'Roboto', sans-serif;
+"
+>
+  <div class="column">
+    <h2 class="ui image header">
+      <div class="content">
+        Log-in to your account
+      </div>
+    </h2>
+    <form action="/login" method="post" class="ui large form">
+    {{ form.hidden_tag() }}
+
+      <div class="ui stacked secondary  segment">
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="user icon"></i>
+            <input type="text" name="username" placeholder="Username">
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="lock icon"></i>
+            <input type="password" name="password" placeholder="Password">
+          </div>
+        </div>
+
+          <div class="field">
+            <div class="ui toggle checkbox">
+              {{ form.remember_me(class_="hidden") }}
+              <label>Remember me</label>
+            </div>
+          </div>
+
+         <div class="field column">
+              {{ form.submit(class_="ui fluid large teal submit button") }}
+          </div>
+
+      </div>
+
+      <div class="ui error message"></div>
+
+    </form>
+
+    <div class="ui message">
+      New to us? <a href="/register">Register</a>
+    </div>
+  </div>
+</div>
+
+<script>
+
+
+
+ $(document).ready(function() {
+  $('.ui.toggle.checkbox')
+    .checkbox()
+  ;
+  
+  $('.ui.form')
+  .form({
+    fields: {
+      username: {
+        identifier: 'username',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please enter your username'
+          }
+        ]
+      },
+      password: {
+        identifier: 'password',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please enter your password'
+          },
+        ]
+      },
+    }
+  })
+;
+ });
+
+
+
+</script>
+
+
+{% endblock %}

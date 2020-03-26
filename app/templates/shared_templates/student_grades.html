@@ -1,0 +1,154 @@
+{% extends "./base_templates/student_base_layout.html" %}
+
+{% block student_content %}
+
+<style> 
+
+#student-grades-content {
+ padding-left: 60px;
+ padding-right: 60px;
+}
+
+</style>
+
+<div id="student-grades-content">
+<h3>{{user.lastname}}, {{user.firstname}} </h3>
+
+
+<div class="ui floating labeled icon dropdown button" id="year_filter">
+  <i class="filter icon"></i>
+  <span class="text">Filter by year</span>
+  <div class="menu">
+      <div class="header">
+      <i class="tags icon"></i>
+          Filter by year
+      </div>
+      <div class="divider"></div>
+      <div class="item">
+          All
+      </div>
+      {% if years %}
+        {% for year in years%}
+        <div class="item">
+            {{year.year}}
+        </div>
+        {% endfor %}
+      {% endif %}
+  </div>
+</div>
+
+<div class="ui floating labeled icon dropdown button" id="semester_filter">
+<i class="filter icon"></i>
+<span class="text">Filter by semester</span>
+<div class="menu">
+    <div class="header">
+    <i class="tags icon"></i>
+        Filter by semester
+    </div>
+    <div class="divider"></div>
+    <div class="item">
+      All semester
+    </div>
+    <div class="item">
+        1st semester
+    </div>
+    <div class="item">
+        2nd semester
+    </div>
+    
+</div>
+</div>
+
+{% if current_user.access_level == 1 %}
+  <div class="ui primary button" id="admin_go">Go</div>
+{% else %}
+  <div class="ui primary button" id="student_go">Go</div>
+{% endif %}
+
+
+
+<table class="ui celled table">
+  <thead>
+    <tr>
+      <th>Subject</th>
+      <th>Units</th>
+      <th>Year</th>
+      <th>Semester</th>
+      <th>Final Grade</th>
+      {% if current_user.access_level == 1 %}
+        <th>Edit</th>
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% if subjects %}
+      {% for subject in subjects %}
+        <tr>
+          <td data-label="Subject">{{subject.subject_name}}</td>
+          <td data-label="Units">{{subject.units}}</td>
+          <td data-label="Year">{{subject.year}}</td>
+          <td data-label="Semester">{{subject.semester}}</td>
+          <td data-label="Final Grade">{{subject.final_grade}}</td>
+          {% if current_user.access_level == 1 %}
+          <td data-label="Edit">
+          <a class="ui labeled icon button teal" href="/student_grades/admin/edit/{{user.id}}/{{subject.id}}">
+            <i class="file alternate icon"></i>
+              Edit Grades
+            </a>
+          </td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    {% endif %}
+  </tbody>
+</table>
+<div class="ui divider"></div>
+
+<div class="ui placeholder segment">
+  <div class="ui icon header">
+    <i class="certificate  icon"></i>
+    Your general average is {{general_average}}
+    <br \>
+    Your are {% if is_subject_qualified %} qualified {% else %} not qualified {% endif %} for dean's list
+    
+    <br \>
+    <br \>
+    Reasons:
+    <br \>
+    <p>1. GPA must be greater or equal to 2.0 {% if is_gpa_qualified %} <i class="check icon"></i> {% else %} <i class="close icon"></i>  {% endif %}
+    
+    <br \>
+    
+    2. Individual Grades per Subject must be greater than or equal to 2.5 {% if is_subject_qualified %} <i class="check icon"></i> {% else %} <i class="close icon"></i> {% endif %}
+    
+    <br \>
+    
+    <div>
+      <img src="{{url_for('static', filename='grading.PNG')}}" />
+    </div>
+    
+  </div>
+
+  {% if current_user.access_level == 1 %}
+    <a class="ui primary button" href="/student_grades/admin/encode/{{user.id}}">Encode subject</a>
+  {% endif %}
+
+</div>
+</div>
+<script>
+    $('.ui.dropdown')
+    .dropdown()
+    ;
+
+    $( document ).ready(function() {
+        $("#admin_go").click(function(){
+            $(location).attr('href', '/student_grades/admin/{{user.id}}?year_filter='+$('#year_filter').dropdown('get value')+'&semester_filter=' +$('#semester_filter').dropdown('get value'));
+        });
+
+        $("#student_go").click(function(){
+            $(location).attr('href', '/student_grades/{{user.id}}?year_filter='+$('#year_filter').dropdown('get value')+'&semester_filter=' +$('#semester_filter').dropdown('get value'));
+        });
+        
+    });
+</script>
+{% endblock %}

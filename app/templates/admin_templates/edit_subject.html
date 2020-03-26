@@ -1,0 +1,141 @@
+{% extends "./base_templates/admin_base_layout.html" %}
+
+{% block admin_content %}
+
+
+
+<style>
+    body > .grid {
+      height: 100%;
+    }
+    .image {
+      margin-top: -100px;
+    }
+    .column {
+      max-width: 450px;
+    }
+</style>
+
+<div class="ui middle aligned center aligned grid segment">
+  <div class="column">
+    <h2 class="ui image header">
+      <div class="content">
+        Encode subject
+      </div>
+    </h2>
+
+    <form action="/student_grades/admin/edit/{{user.id}}/{{subject.id}}" method="post" class="ui large form">
+    {{ form.hidden_tag() }}
+      <div class="ui stacked secondary  segment">
+
+      
+        <div class="field">
+          <div class="ui left input">
+            <input type="text" name="subject_name" placeholder="Subject" value=" {{subject.subject_name}}">
+          </div>
+        </div>
+
+     <div class="field">
+          <div class="ui left  input">
+            <input type="text" name="units" placeholder="Units" value="{{subject.units}}">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="ui left  input">
+            <input type="text" name="year" placeholder="Year" value="{{subject.year}}">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="ui left  input">
+            <input type="text" name="semester" placeholder="Semester" value="{{subject.semester}}">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="ui left  input">
+            <input type="text" name="final_grade" placeholder="Final grade" value="{{subject.final_grade}}">
+          </div>
+        </div>
+
+
+    
+        {{form.submit(class="ui fluid large teal submit button")}}
+        
+      </div>
+
+      <div class="ui error message"></div>
+
+     
+
+    </form>
+
+
+
+  </div>
+</div>
+
+<script>
+
+ $(document).ready(function() {   
+    $('.ui.form')
+  .form({
+    fields: {
+      subject_name: {
+        identifier: 'subject_name',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Subject name must not be empty'
+          }
+        ]
+      },
+      units: {
+        identifier: 'units',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'units must not be empty'
+          }
+        ]
+      },
+      year: {
+        identifier: 'year',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'year must not be empty'
+          }
+        ]
+      },
+      semester: {
+        identifier: 'semester',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'semester  must not be empty'
+          }
+        ]
+      },
+      final_grade: {
+        identifier: 'final_grade',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'final_grade'
+          }
+        ]
+      },
+
+      
+    }
+  })
+;
+ });
+
+
+</script>
+
+
+{% endblock %}

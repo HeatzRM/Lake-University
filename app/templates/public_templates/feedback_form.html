@@ -1,0 +1,114 @@
+{% extends "./base_templates/student_base_layout.html" %}
+
+{% block student_content %}
+<style>
+    body > .grid {
+      height: 100%;
+    }
+    .image {
+      margin-top: -100px;
+    }
+    .column {
+      max-width:800px;
+    }
+</style>
+
+<div class="ui middle aligned center aligned grid segment"
+style="
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-radius: none;
+    border: none;
+    font-family:'Roboto', sans-serif;
+"
+>
+  <div class="column">
+    <h2 class="ui image header">
+      <div class="content">
+        Feedback
+      </div>
+    </h2>
+
+    <form action="/feedback_form" method="post" class="ui large form">
+    {{ form.hidden_tag() }}
+      <div class="ui stacked secondary  segment">
+
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="user icon"></i>
+            <input type="text" name="name" placeholder="name">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="envelope outline icon"></i>
+            <input type="text" name="email" placeholder="Email address">
+          </div>
+        </div>
+
+        <br />
+        <textarea name="details" id="details" rows="10" cols="80"></textarea>
+
+        {{form.submit(class="ui fluid large teal submit button")}}
+        
+      </div>
+
+      <div class="ui error message"></div>
+
+    </form>
+
+  </div>
+</div>
+
+<script src="//cdn.ckeditor.com/4.12.1/standard/ckeditor.js"></script>
+
+<script>
+
+CKEDITOR.replace( 'details' );
+
+ $(document).ready(function() { 
+    $('.ui.form')
+  .form({
+    fields: {
+      name: {
+        identifier: 'name',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please enter your name'
+          }
+        ]
+      },
+      email: {
+        identifier: 'email',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please enter your email'
+          },
+          {
+            type   : 'email',
+            prompt : 'Please a valid email address'
+          }
+        ]
+      },
+      details: {
+        identifier: 'details',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please enter details'
+          }
+        ]
+      },
+     
+    }
+  })
+;
+ });
+
+
+</script>
+
+{% endblock %}

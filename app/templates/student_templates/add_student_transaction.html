@@ -1,0 +1,205 @@
+{% extends "./base_templates/student_base_layout.html" %}
+
+{% block student_content %}
+<style>
+    body > .grid {
+      height: 100%;
+    }
+    .image {
+      margin-top: -100px;
+    }
+    .column {
+      max-width: 450px;
+    }
+</style>
+
+
+
+
+<div class="ui middle aligned center aligned grid segment"
+style="
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-radius: none;
+    border: none;
+    font-family:'Roboto', sans-serif;
+"
+>
+  <div class="column">
+    <h2 class="ui image header">
+        <div class="content">
+        <div class="ui grid">
+            <br />
+            Add a new student transaction
+            <br />
+            <br />
+        </div>
+        <!--
+          <button class=" ui button negative " id="back_to_list">
+            <i class="caret left icon"></i>
+            Back to list
+          </button>
+        -->
+      </div>
+    </h2>
+    
+    
+    <form action="/student_transaction_add" method="post" class="ui large form" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+
+      <div class="ui stacked secondary  segment">
+
+
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="heading icon"></i>
+            <input type="text" name="service_name" placeholder="Service name">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="phone icon"></i>
+            <input type="text" name="contact_details" placeholder="Contact details">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="edit icon"></i>
+            <textarea type="text" name="description" placeholder="Description"></textarea>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="ui selection dropdown">
+            <input type="hidden" name="service_type">
+            <i class="dropdown icon"></i>
+            <div class="default text"><i class="wrench icon"></i>Service type</div>
+            <div class="menu">
+              <div class="item" data-value="1"><i class="book icon"></i>Book renting</div>
+              <div class="item" data-value="2"><i class="chalkboard teacher icon"></i>Tutorial services</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="image icon"></i>
+            <input type="file" accept="image/*" id="cover_image" name="cover_image" placeholder="Cover Image" />
+          </div>
+        </div>
+
+        <div class="field">
+            <div class="ui right labeled input">
+                <label for="amount" class="ui label"><i class="money bill icon"></i></label>
+                
+                <input type="text" placeholder="Price" id="price" name="price" value="0">
+                <div class="ui basic label">₱</div>
+            </div>
+        </div>
+
+         <div class="field column">
+              {{ form.submit(class_="ui fluid large teal submit button") }}
+          </div>
+
+      </div>
+
+      <div class="ui error message"></div>
+
+    </form>
+
+  </div>
+</div>
+
+<script>
+
+
+
+ $(document).ready(function() {
+  $('.ui.toggle.checkbox')
+    .checkbox()
+  ;
+  
+  $('.ui.form')
+  .form({
+    fields: {
+      service_name: {
+        identifier: 'service_name',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please enter service name'
+          }
+        ]
+      },
+
+      contact_details: {
+        identifier: 'contact_details',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please enter contact details'
+          }
+        ]
+      },
+
+      description: {
+        identifier: 'description',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please enter description'
+          }
+        ]
+      },
+
+      service_type: {
+        identifier: 'service_type',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please choose a service type'
+          }
+        ]
+      },
+
+      price: {
+        identifier: 'price',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please enter price'
+          },
+          {
+            type   : 'number',
+            prompt : 'Please enter a valid price'
+          }
+        ]
+      },
+      
+    }
+  })
+;
+ });
+
+
+
+</script>
+
+<script>
+
+    
+
+    $( document ).ready(function() {
+        $("#back_to_list").click(function(){
+            $(location).attr('href', '/student_transaction');
+        });
+
+        
+    });
+
+    
+</script>
+
+{% endblock %}
