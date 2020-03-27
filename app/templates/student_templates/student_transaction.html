@@ -65,7 +65,7 @@
             <div class="card">
                 <div class="image">
 
-                <img src="{{ url_for('static', filename='images/{}'.format(student_transaction.cover_destination)) }}">
+                <img src="{{ student_transaction.cover_destination }}">
                 </div>
                 <div class="content">
                 <div class="header">{{student_transaction.service_name}} </div>
