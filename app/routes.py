@@ -20,11 +20,18 @@ from werkzeug.exceptions import HTTPException
 from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
 
+import boto3
+
+ALLOWED_EXTENSIONS = {"pdf", "png", "jpg", "jpeg", "gif"}
+
 engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, echo=True)
 Session = sessionmaker(bind=engine)
 
 
 logging.basicConfig(level=logging.DEBUG)
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.before_request
 def before_request():
@@ -498,16 +505,36 @@ def admin_delete_student_transaction(student_transaction_id):
 @login_required
 def add_student_transaction():
     form = AddStudentTransactionForm()
+    folder_unique_str = "student_transaction_" + str(uuid4())
+
     if form.validate_on_submit():
         filename = ''
         if 'cover_image' in request.files:
             file = request.files['cover_image']
+            
+            if file and allowed_file(file.filename):
+                session = boto3.Session(
+                    aws_access_key_id=app.config["AWS_ACCESS_KEY_ID"],
+                    aws_secret_access_key=app.config["AWS_SECRET_ACCESS_KEY"],
+                )
+                filename = secure_filename(file.filename)
+                filename = str(uuid4()) + "_" + filename
 
-            if file:
-                APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-                target = os.path.join(APP_ROOT, 'static/images')
-                filename = str(uuid4())  + '_' + secure_filename(file.filename)
-                file.save(os.path.join(target, filename))
+                s3_client = session.resource("s3")
+                response = s3_client.Bucket(app.config["S3_BUCKET"]).put_object(
+                    Key=(
+                        "lakeuniversity/pictures/"
+                        + app.config["IMAGE_DEPLOY_FOLDER_LOCATION"]
+                        + "/"
+                        + folder_unique_str
+                        + "/"
+                        + filename
+                    ),
+                    Body=file,
+                    ACL="public-read",
+                )
+                app.logger.info("[response]:")
+                app.logger.info(response)
 
         price = 0
         if form.price.data != '':
@@ -520,7 +547,12 @@ def add_student_transaction():
             service_type=form.service_type.data,
             price=price,
             user=User.query.filter_by(id=g.user.id).first_or_404(),
-            cover_destination=filename
+            cover_destination=( "https://lake-uni.s3.ap-northeast-2.amazonaws.com/lakeuniversity/pictures/"
+                    + app.config["IMAGE_DEPLOY_FOLDER_LOCATION"]
+                    + "/"
+                    + folder_unique_str
+                    + "/"
+                    + filename)
         )
         db.session.add(student_transaction)
         db.session.commit()
