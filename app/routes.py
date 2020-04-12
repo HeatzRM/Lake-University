@@ -563,7 +563,7 @@ def add_student_transaction():
 
 @app.route("/student_transaction/<int:page_num>", methods=["GET", "POST"])
 def student_transaction(page_num=1):
-    student_transactions = StudentTransaction.query.paginate(per_page=1, page=page_num, error_out=True)
+    student_transactions = StudentTransaction.query.paginate(per_page=10, page=page_num, error_out=True)
     print(student_transactions)
     return render_template('./student_templates/student_transaction.html', title="Student transaction page", student_transactions=student_transactions)
 
