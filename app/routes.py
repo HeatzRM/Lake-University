@@ -272,7 +272,7 @@ def student_grades(user_id):
 
 
     user = User.query.filter_by(id=user_id).first_or_404()
-    years = Subject.query.filter_by(user_id=user_id).group_by(Subject.year).distinct().all()
+    years = Subject.query.filter_by(user_id=user_id).distinct(Subject.year).all()
     
     return render_template('shared_templates/student_grades.html', title='Grades', user=user, subjects=subjects, years=years, general_average=round(general_average,2), dean_list_qualified=dean_list_qualified, is_gpa_qualified=is_gpa_qualified, is_subject_qualified=is_subject_qualified)
 
@@ -345,7 +345,7 @@ def admin_student_grades(user_id):
 
 
     user = User.query.filter_by(id=user_id).first_or_404()
-    years = Subject.query.filter_by(user_id=user_id).group_by(Subject.year).distinct().all()
+    years = Subject.query.filter_by(user_id=user_id).distinct(Subject.year).all()
     
     return render_template('shared_templates/student_grades.html', title='Grades', user=user, subjects=subjects, years=years, general_average=round(general_average,2), dean_list_qualified=dean_list_qualified, is_gpa_qualified=is_gpa_qualified, is_subject_qualified=is_subject_qualified)
 
